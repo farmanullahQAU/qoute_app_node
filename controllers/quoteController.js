@@ -3,7 +3,11 @@ const Quote = require('../models/quoteModel');
 // Save a new quote
 exports.createQuote = async (req, res) => {
   try {
+    console.log('Request body:', req.body); // Log the request body
     const { text, category, author, isFromUser } = req.body;
+    if (!text) {
+      return res.status(400).json({ message: 'Text is required' });
+    }
     const newQuote = new Quote({
       text,
       category,
@@ -13,7 +17,8 @@ exports.createQuote = async (req, res) => {
     const savedQuote = await newQuote.save();
     res.status(201).json(savedQuote);
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    console.error('Error:', error); // Log the error
+    res.status(500).json({ message: 'Server Error error', err: error });
   }
 };
 
@@ -32,6 +37,7 @@ exports.getQuotes = async (req, res) => {
       currentPage: page,
     });
   } catch (error) {
+    console.error('Error:', error); // Log the error
     res.status(500).json({ message: 'Server Error' });
   }
 };
