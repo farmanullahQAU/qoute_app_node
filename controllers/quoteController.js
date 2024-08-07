@@ -4,23 +4,30 @@ const Quote = require('../models/quoteModel');
 exports.createQuote = async (req, res) => {
   try {
     console.log('Request body:', req.body); // Log the request body
+    if (!req.body) {
+      return res.status(400).json({ message: 'No request body' });
+    }
+
     const { text, category, author, isFromUser } = req.body;
     if (!text) {
       return res.status(400).json({ message: 'Text is required' });
     }
+
     const newQuote = new Quote({
       text,
       category,
       author,
       isFromUser,
     });
+
     const savedQuote = await newQuote.save();
     res.status(201).json(savedQuote);
   } catch (error) {
-    console.error('Error:', error); // Log the error
+    console.error('Error:', error);
     res.status(500).json({ message: 'Server Error error', err: error });
   }
 };
+
 
 // Get all quotes with pagination
 exports.getQuotes = async (req, res) => {
